@@ -1,0 +1,38 @@
+name: CD test run
+description: Run CD tests
+
+inputs:
+  app:
+    description: 'App to build'
+    required: true
+
+  # env:
+  #   description: 'Environment to deploy to'
+  #   required: true
+
+  config_dir:
+    description: 'Directory containing the config files'
+    required: true
+
+  tag:
+    description: 'Tag to attach to the image'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 2
+
+    - name: Build
+      shell: bash
+      run: |
+        if ! command -v kd &> /dev/null; then
+          curl -L https://github.com/voormedia/kd/releases/download/v2.0.8/linux_amd64_kd -o kd
+          chmod +x kd
+          sudo mv kd /usr/local/bin/
+        fi
+
+        kd build php --tag "$BRANCH-$SHA_SHORT"
