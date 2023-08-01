@@ -6,9 +6,9 @@ inputs:
     description: 'App to build'
     required: true
 
-  # env:
-  #   description: 'Environment to deploy to'
-  #   required: true
+  environment:
+    description: 'Environment to deploy to'
+    required: true
 
   config_dir:
     description: 'Directory containing the config files'
@@ -18,9 +18,33 @@ inputs:
     description: 'Tag to attach to the image'
     required: true
 
+  gke_sa_key:
+    description: 'GKE service account key'
+    required: true
+
+  gke_project:
+    description: 'GKE project'
+    required: true
+
 runs:
   using: "composite"
   steps:
+    - name: Configure Docker
+      run: gcloud --quiet auth configure-docker
+      shell: bash
+
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ inputs.gke_sa_key }}
+
+    - name: Get GKE credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_ZONE }}
+        project_id: ${{ inputs.gke_project }}
+
     - name: Cache kd binary
       uses: actions/cache@v3
       with:
