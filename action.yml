@@ -71,10 +71,6 @@ runs:
     #     fi
     #   shell: bash
 
-    - name: Find path to rails executable
-      run: echo "RAILS_PATH=$(which rails)" >> $GITHUB_ENV
-      shell: bash
-
     - name: Run Rails migration
-      run: ${{ env.RAILS_PATH }} db:migrate:status ENV=acceptance
+      run: bundle exec rails db:migrate:status RAILS_ENV=acceptance
       shell: bash
