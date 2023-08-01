@@ -6,18 +6,6 @@ inputs:
     description: 'App to build'
     required: true
 
-  environment:
-    description: 'Environment to deploy to'
-    required: true
-
-  config_dir:
-    description: 'Directory containing the config files'
-    required: true
-
-  tag:
-    description: 'Tag to attach to the image'
-    required: true
-
   gke_sa_key:
     description: 'GKE service account key'
     required: true
