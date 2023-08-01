@@ -21,14 +21,21 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # - uses: actions/checkout@v3
-    #   with:
-    #     ref: ${{ github.event.pull_request.head.sha }}
-    #     fetch-depth: 2
+    - name: Cache kd binary
+      uses: actions/cache@v3
+      with:
+        path: /usr/local/bin/kd
+        key: ${{ runner.os }}-kd
+        restore-keys: |
+          ${{ runner.os }}-kd
 
-    - name: Build
-      shell: bash
+    - name: Set variables for tagging
       run: |
+        echo "BRANCH=${{ github.ref_name }}" >> $GITHUB_ENV
+        echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      shell: bash
+
+    - run: |
         if ! command -v kd &> /dev/null; then
           curl -L https://github.com/voormedia/kd/releases/download/v2.0.8/linux_amd64_kd -o kd
           chmod +x kd
