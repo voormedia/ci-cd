@@ -61,12 +61,20 @@ runs:
         ruby-version: "3.1" # Not needed with a .ruby-version file
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - name: Build and deploy
-      run: |
-        if kd build php \
-          --tag "$BRANCH-$SHA_SHORT" \
-          && kd build rails \
-          --tag "$BRANCH-$SHA_SHORT"; then
-          rails db:migrate:status acceptance
-        fi
+    # - name: Build and deploy
+    #   run: |
+    #     if kd build php \
+    #       --tag "$BRANCH-$SHA_SHORT" \
+    #       && kd build rails \
+    #       --tag "$BRANCH-$SHA_SHORT"; then
+    #       rails db:migrate:status acceptance
+    #     fi
+    #   shell: bash
+
+    - name: Find path to rails executable
+      run: echo "RAILS_PATH=$(which rails)" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Run Rails migration
+      run: ${{ env.RAILS_PATH }} db:migrate:status ENV=acceptance
       shell: bash
