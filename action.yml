@@ -59,11 +59,26 @@ runs:
         echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       shell: bash
 
-    - run: |
+    - name: Install kd
+      run: |
         if ! command -v kd &> /dev/null; then
           curl -L https://github.com/voormedia/kd/releases/download/v2.0.8/linux_amd64_kd -o kd
           chmod +x kd
           sudo mv kd /usr/local/bin/
         fi
 
-        kd build php --tag "$BRANCH-$SHA_SHORT"
+    - name: Run bundler
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "3.1" # Not needed with a .ruby-version file
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+    - name: Build and deploy
+      run: |
+        if kd build php \
+          --tag "$BRANCH-$SHA_SHORT" \
+          && kd build rails \
+          --tag "$BRANCH-$SHA_SHORT"; then
+          rails db:migrate:status acceptance
+        fi
+      shell: bash
