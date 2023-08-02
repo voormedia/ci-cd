@@ -14,6 +14,11 @@ inputs:
     description: 'GKE project'
     required: true
 
+  command:
+    description: Command to run tests
+    required: false
+    # default:
+
 runs:
   using: "composite"
   steps:
@@ -61,7 +66,8 @@ runs:
         echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       shell: bash
 
-    - name: Run bundler
+    - if: ${{ inputs.app == 'rails' }}
+      name: Run bundler
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: "3.1" # Not needed with a .ruby-version file
@@ -69,7 +75,5 @@ runs:
 
     - name: Build and deploy
       run: |
-        kd build php --tag "$BRANCH-$SHA_SHORT" &&
-        kd build rails --tag "$BRANCH-$SHA_SHORT" &&
-        bundle exec rails db:migrate:status RAILS_ENV=acceptance
+        ${{ inputs.command }}
       shell: bash
