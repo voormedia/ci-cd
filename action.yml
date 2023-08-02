@@ -59,6 +59,7 @@ runs:
           chmod +x kd
           sudo mv kd /usr/local/bin/
         fi
+      shell: bash
 
     - name: Set variables for tagging
       run: |
