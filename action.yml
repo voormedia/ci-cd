@@ -4,7 +4,7 @@ description: Run CD tests
 inputs:
   app:
     description: 'App to build'
-    required: true
+    required: false
 
   gke_sa_key:
     description: 'GKE service account key'
