@@ -72,8 +72,7 @@ runs:
         echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       shell: bash
 
-    - if: ${{ inputs.app == 'rails' }}
-      name: Run bundler
+    - name: Run bundler
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: "3.1" # Not needed with a .ruby-version file
