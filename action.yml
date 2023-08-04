@@ -6,6 +6,10 @@ inputs:
     description: 'App to build'
     required: false
 
+  config:
+    description: 'Config file to use'
+    required: false
+
   gke_sa_key:
     description: 'GKE service account key'
     required: true
@@ -22,7 +26,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Collect config files # Use multiple GitHub deploy keys inside Docker builds
+    - if : ${{ inputs.config }}
+      name: Collect config files # Use multiple GitHub deploy keys inside Docker builds
       run: |
         mkdir root-config
           cp -r ~/.gitconfig  ~/.ssh root-config/
