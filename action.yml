@@ -6,6 +6,10 @@ inputs:
     description: 'App to build'
     required: false
 
+  version: # id of input
+    description: 'Version to build'
+    required: false
+
   config:
     description: 'Config file to use'
     required: false
@@ -75,7 +79,7 @@ runs:
     - name: Run bundler
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: "3.1" # Not needed with a .ruby-version file
+        ruby-version: ${{ inputs.version }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Build and deploy
