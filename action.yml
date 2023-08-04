@@ -67,6 +67,8 @@ runs:
           curl -L https://github.com/voormedia/kd/releases/download/v2.0.8/linux_amd64_kd -o kd
           chmod +x kd
           sudo mv kd /usr/local/bin/
+        else
+            echo "kd already installed. Skipping installation."
         fi
       shell: bash
 
